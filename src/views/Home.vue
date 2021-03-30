@@ -1,7 +1,7 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Kwetter." />
+    <img alt="Kwetter logo" src="../assets/kwetter.png" />
+    <Login msg="Kwetter." />
 
     <!-- Check that the SDK client is not currently loading before accessing is methods -->
     <div v-if="!$auth.loading">
@@ -15,11 +15,11 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
+import Login from '@/components/Login.vue'; // @ is an alias to /src
 
 @Component({
   components: {
-    HelloWorld,
+    Login,
   },
 })
 export default class Home extends Vue {

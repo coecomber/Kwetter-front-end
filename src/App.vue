@@ -1,10 +1,17 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+      <span v-if="$auth.isAuthenticated"> 
+        <router-link to="/">Kwetter</router-link> 
+      </span>
       <span v-if="$auth.isAuthenticated"> |
         <router-link  to="/profile">Profile</router-link>
+      </span>
+      <span v-if="$auth.isAuthenticated"> |
+        <router-link  to="/about">About</router-link>
+      </span>
+      <span v-if="$auth.isAuthenticated"> |
+        <router-link to="/#">Log out</router-link>
       </span>
     </div>
     <router-view/>
@@ -31,5 +38,9 @@
 
 #nav a.router-link-exact-active {
   color: #42b983;
+}
+
+body {
+  background-image: url('./assets/bg.png');
 }
 </style>
