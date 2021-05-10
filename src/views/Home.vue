@@ -11,16 +11,22 @@
     <!-- Check that the SDK client is not currently loading before accessing is methods -->
     <div v-if="!$auth.loading">
       <!-- show login when not authenticated -->
-      <button v-if="!$auth.isAuthenticated" @click="login">Log in</button>
+      <button
+        class="mt-4 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+        v-if="!$auth.isAuthenticated"
+        @click="login"
+      >
+        Log in
+      </button>
       <!-- show logout when authenticated -->
       <!-- <button v-if="$auth.isAuthenticated" @click="logout">Log out</button> -->
       <div v-if="$auth.isAuthenticated">
         <!-- This example requires Tailwind CSS v2.0+ -->
-        <div class="py-12 bg-white">
+        <div class="py-12">
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="lg:text-center">
               <p
-                class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl"
+                class="mt-6 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl"
               >
                 The best way to share your life.
               </p>
@@ -175,6 +181,11 @@
           </div>
         </div>
       </div>
+      <a href="/kweet"
+        class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
+      >
+        Get kweeting!
+      </a>
     </div>
   </div>
 </template>

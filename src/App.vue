@@ -5,6 +5,9 @@
       <a id="home" href="/">
         <span>Home</span>
       </a>
+      <a id="kweet" href="/kweet">
+        <span>Kweets</span>
+      </a>
       <a id="profile" href="/profile">
         <span>Profile</span>
       </a>
