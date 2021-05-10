@@ -1,6 +1,7 @@
 <template>
   <div class="home" v-if="!$auth.loading">
-    <img alt="Kwetter logo" src="../assets/kwetter.png"  v-if="!$auth.isAuthenticated"/>
+    <img alt="Kwetter logo" src="../assets/kwetter.png" style="margin-left: auto;
+  margin-right: auto;" v-if="!$auth.isAuthenticated"/>
     <Login msg="Kwetter." />
 
     <!-- Check that the SDK client is not currently loading before accessing is methods -->

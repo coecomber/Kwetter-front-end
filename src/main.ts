@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import { Auth0Plugin } from './auth'
 import { domain, clientId } from '../auth.config.json'
+import '@/assets/styles/tailwind.css'; //tailwind
 
 Vue.use(Auth0Plugin, {
   domain,

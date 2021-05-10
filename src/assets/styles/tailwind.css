@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-bg-primary: #ea5198;
+  --color-bg-secondary: #1f4564;
+  --color-bg-default: #edf2f7;
+
+  --color-text-primary: #fff;
+  --color-text-secondary: #fff;
+  --color-text-default: #1f4564;
+
+  --color-border-default: #1f4564;
+
+  --color-table-border-default: rgba(196, 196, 196, 0.4);
+  --color-table-text-default: #585858;
+
+  --font-display: 'Nunito', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI',
+    'Roboto', 'Helvetica', 'Arial', 'sans-serif';
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-gray-200;
+  border-radius: 7px;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-vll-pink;
+  border-radius: 7px;
+}
+
+body {
+  font-family: nunito, sans-serif;
+}
