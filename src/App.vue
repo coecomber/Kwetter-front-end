@@ -14,25 +14,6 @@
       <a id="logout" @click="logout">
         <span>Logout</span>
       </a>
-      <!-- <div id="nav">
-        <span v-if="$auth.isAuthenticated">
-          <router-link id="menu_routers" to="/">Kwetter</router-link>
-        </span>
-        <span v-if="$auth.isAuthenticated">
-          |
-          <router-link id="menu_routers" to="/profile">Profile</router-link>
-        </span>
-        <span v-if="$auth.isAuthenticated">
-          |
-          <router-link id="menu_routers" to="/about">About</router-link>
-        </span>
-        <span v-if="$auth.isAuthenticated">
-          |
-          <button id="btn_logout" v-if="$auth.isAuthenticated" @click="logout">
-            Log out
-          </button>
-        </span>
-      </div> -->
     </Slide>
     <router-view />
   </div>
