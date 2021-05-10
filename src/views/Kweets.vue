@@ -1,6 +1,6 @@
 <template>
   <div v-if="$auth.isAuthenticated">
-    <div class="py-12 bg-white">
+    <div class="py-12">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="lg:text-center">
           <p
@@ -8,41 +8,69 @@
           >
             Kweets
           </p>
-          <p class="max-w-2xl text-xl text-gray-500 lg:mx-auto">
-            Welcome to the new age. The <b>Kwetter</b> age.
-          </p>
+          <br />
         </div>
 
         <ul id="example-1">
-          <li v-for="kweet in kweets" :key="kweet.id">
-            <div class="flex justify-center items-center">
-              <!-- Start of component -->
-              <div
-                class="max-w-sm bg-white border-2 border-gray-300 p-6 rounded-md tracking-wide shadow-lg"
-              >
-                <div id="header" class="flex items-center mb-4">
-                  <img
-                    alt="avatar"
-                    class="w-20 rounded-full border-2 border-gray-300"
-                    src="https://picsum.photos/seed/picsum/200"
-                  />
-                  <div id="header-text" class="leading-5 ml-6 sm">
-                    <h4 id="name" class="text-xl font-semibold">
-                      {{ kweet.name }}
-                    </h4>
+          <div class="flex flex-wrap">
+            <div class="flex-auto items-center">
+              <li v-for="kweet in kweets" :key="kweet.id">
+                <!-- Start of component -->
+                <div
+                  class="md:max-w-lg w-screen bg-white border-2 border-gray-300 p-6 rounded-md tracking-wide shadow-lg"
+                >
+                  <div id="header" class="flex items-center mb-4">
+                    <img
+                      alt="avatar"
+                      class="w-20 rounded-full border-2 border-gray-300"
+                      src="https://picsum.photos/seed/picsum/200"
+                    />
+                    <div id="header-text" class="leading-5 ml-6 sm">
+                      <h4 id="name" class="text-xl font-semibold">
+                        {{ kweet.name }}
+                      </h4>
+                    </div>
+                  </div>
+                  <div id="quote">
+                    <q class="italic text-gray-600">{{ kweet.kweet }}</q>
                   </div>
                 </div>
-                <div id="quote">
-                  <q class="italic text-gray-600">{{ kweet.kweet }}</q>
-                </div>
-              </div>
-              <!-- End of component -->
+                <!-- End of component -->
+              </li>
+              <infinite-loading spinner="spiral" @infinite="GetMoreKweets">
+                <div slot="no-more"></div>
+              </infinite-loading>
             </div>
-            
-          </li>
-          <infinite-loading spinner="spiral" @infinite="GetMoreKweets">
-              <div slot="no-more"></div>
-            </infinite-loading>
+
+            <div class="flex-initial">
+              <p class="max-w-2xl text-xl text-gray-500 lg:mx-auto">
+                Post new <b>Kweet</b>? <em class="text-light">(up to 140 characters)</em>
+              </p>
+              <form class="w-full max-w-sm">
+                <div class="flex items-center border-b border-teal-500 py-2">
+                  <input
+                    class="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
+                    type="text"
+                    placeholder="What's on your mind?"
+                    aria-label="Full name"
+                    v-model="kweet"
+                    oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                    maxlength="140"
+                  />
+                  <button
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                  > Post Kweet
+                  </button>
+                </div>
+              </form>
+
+              <br /><br /><br /><br />
+
+              <p class="max-w-2xl text-xl text-gray-500 lg:mx-auto">
+                What's trending on <b>Kwetter</b>?
+              </p>
+            </div>
+          </div>
         </ul>
       </div>
     </div>
@@ -58,12 +86,10 @@ import InfiniteLoading from "vue-infinite-loading";
   components: {
     InfiniteLoading,
   },
-  data(){
-    return{
-    }
-  }
+  data() {
+    return {};
+  },
 })
-
 export default class Kweets extends Vue {
   private kweets = [];
   private currentPage = 0;

@@ -65,6 +65,10 @@ export default class App extends Vue {
 
 body {
   background-image: url("./assets/bg.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center; 
+  background-color: #808c9c;
 }
 
 #btn_logout {
