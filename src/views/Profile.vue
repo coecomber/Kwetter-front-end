@@ -1,5 +1,5 @@
-<template>
-  <div>
+<template >
+  <div v-if="!$auth.loading">
     <div>
       <img :src="$auth.user.picture">
       <h2>{{ $auth.user.name }}</h2>

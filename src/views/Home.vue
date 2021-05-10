@@ -1,6 +1,6 @@
 <template>
-  <div class="home">
-    <img alt="Kwetter logo" src="../assets/kwetter.png" />
+  <div class="home" v-if="!$auth.loading">
+    <img alt="Kwetter logo" src="../assets/kwetter.png"  v-if="!$auth.isAuthenticated"/>
     <Login msg="Kwetter." />
 
     <!-- Check that the SDK client is not currently loading before accessing is methods -->
@@ -8,7 +8,10 @@
       <!-- show login when not authenticated -->
       <button v-if="!$auth.isAuthenticated" @click="login">Log in</button>
       <!-- show logout when authenticated -->
-      <button v-if="$auth.isAuthenticated" @click="logout">Log out</button>
+      <!-- <button v-if="$auth.isAuthenticated" @click="logout">Log out</button> -->
+      <div v-if="$auth.isAuthenticated">
+        <p>skrt</p>
+      </div>
     </div>
   </div>
 </template>
