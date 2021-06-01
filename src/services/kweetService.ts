@@ -9,9 +9,9 @@ class KweetService{
         return AxiosRequestHandler.get(`api/kweet/${Id}`);
     }
 
-    // public static createKweet(token: string, kweet: object){
-    //     return AxiosRequestHandler.post(':3123/api/kweet', kweet, token);
-    // }
+    public static createKweet(token: string, kweet: object){
+        return AxiosRequestHandler.post(':3123/api/kweet', kweet, token);
+    }
 }
 
 export default KweetService;
