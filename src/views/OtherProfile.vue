@@ -51,6 +51,7 @@
             {{ profile.description }}
           </p>
 
+
           <div
             class="mt-6 pb-16 lg:pb-0 w-4/5 lg:w-full mx-auto flex flex-wrap items-center justify-between"
           >
@@ -117,15 +118,6 @@
                 /></svg
             ></a>
           </div>
-          <br>
-          <a
-              align="right"
-              v-if="$auth.isAuthenticated"
-              href="/kweet"
-              class="bg-blue-500 object-right hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
-            >
-              Edit profile!
-            </a>
 
           <!-- Use https://simpleicons.org/ to find the svg for your preferred product -->
         </div>
@@ -169,7 +161,7 @@ export default class Profile extends Vue {
     const auth = await this.$auth.getUser();
     this.profile = await ProfileService.GetProfileByName(
       await this.$auth.getTokenSilently({}),
-      'Dr. Joost'
+      this.$route.params.name
     ).then((res) => {
       console.log(res.data);
       return res.data

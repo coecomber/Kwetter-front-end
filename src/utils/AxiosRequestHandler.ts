@@ -1,4 +1,4 @@
-import axios, { AxiosResponse, AxiosError } from "axios";
+import axios, { AxiosResponse, AxiosError, AxiosRequestConfig } from "axios";
 import { StatusCodes } from "http-status-codes";
 import BadRequestException from "./exceptions/badRequest.exception";
 import HttpException from "./exceptions/httpException";
@@ -6,13 +6,15 @@ import InternalServerException from "./exceptions/internalServer.exception";
 
 class AxiosRequestHandler {
     private static api = axios.create({
-        baseURL: "http://localhost:3123"
+        baseURL: "http://api.localhost/"
     })
 
     public static get(url: string): any {
         return this.api
             .get(url, { headers: { } })
             .then((res: AxiosResponse) => {
+                console.log('Trying to get')
+                console.log(url)
                 return res;
             })
             .catch((err: AxiosError) => {
@@ -22,13 +24,18 @@ class AxiosRequestHandler {
             });
     }
 
-    public static post(url: string, object: any, token: any): any {
+    public static async post<TRequestBody, TResponseBody>(
+        url: string,
+        object: TRequestBody,
+        config?: AxiosRequestConfig
+      ): Promise<AxiosResponse<TResponseBody>> {
         return this.api
-            .post(url, object, { headers: { Authorization: `Bearer ${token}` } })
+            .post(url, object)
             .then((res: AxiosResponse) => {
                 return res;
             })
             .catch((err: AxiosError) => {
+                console.log('Got an error from AxiosRequestHandler.ts.post();')
                 throw this.checkStatusCode(err);
             });
     }

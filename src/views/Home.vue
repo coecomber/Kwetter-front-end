@@ -22,6 +22,7 @@
       <!-- <button v-if="$auth.isAuthenticated" @click="logout">Log out</button> -->
       <div v-if="$auth.isAuthenticated">
         <!-- This example requires Tailwind CSS v2.0+ -->
+
         <div class="py-12">
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="lg:text-center">
@@ -181,11 +182,13 @@
           </div>
         </div>
       </div>
-      <a v-if="$auth.isAuthenticated" href="/kweet"
+      <router-link
+        v-if="$auth.isAuthenticated"
         class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
+        to="/kweet"
       >
         Get kweeting!
-      </a>
+      </router-link>
     </div>
   </div>
 </template>
@@ -193,13 +196,37 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import Login from "@/components/Login.vue"; // @ is an alias to /src
+import ProfileService from "@/modules/profile/profileService";
 
 @Component({
   components: {
     Login,
   },
+  data: function () {},
 })
 export default class Home extends Vue {
+  private ownerId = "";
+
+  async mounted() {
+    setTimeout(async () => {
+      try {
+        await ProfileService.GetCheckProfileByOwnerId(
+          await this.$auth.getTokenSilently({}),
+          await this.$auth.user.sub
+        ).then((res) => {
+          console.log(res);
+          if (res.data.ownerId == undefined) {
+            console.log("router push");
+            this.$router.push("CreateProfile");
+          }
+        });
+      } catch (ex) {
+        //No user logged in OR logged in user doesn't have a profile yet
+        console.log(ex);
+      }
+    }, 600);
+  }
+
   login() {
     this.$auth.loginWithRedirect({});
   }

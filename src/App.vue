@@ -1,19 +1,19 @@
 <template>
   <div id="app">
     
-    <Slide v-if="$auth.isAuthenticated">
-      <a id="home" href="/">
+    <Slide v-if="$auth.isAuthenticated && !$auth.loading" :closeOnNavigation="true">
+      <router-link to="/">
         <span>Home</span>
-      </a>
-      <a id="kweet" href="/kweet">
-        <span>Kweets</span>
-      </a>
-      <a id="profile" href="/profile">
+      </router-link>
+      <router-link to="/kweet">
+        <span>Kweet</span>
+      </router-link>
+      <router-link to="/profile">
         <span>Profile</span>
-      </a>
-      <a id="about" href="/about">
+      </router-link>
+      <!-- <router-link to="/about">
         <span>About</span>
-      </a>
+      </router-link> -->
       <a id="logout" @click="logout">
         <span>Logout</span>
       </a>
@@ -38,6 +38,7 @@ export default class App extends Vue {
       returnTo: window.location.origin,
     });
   }
+ 
 }
 </script>
 

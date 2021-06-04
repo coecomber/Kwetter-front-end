@@ -3,6 +3,8 @@ import VueRouter, { RouteConfig } from 'vue-router'
 import Home from '../views/Home.vue'
 import Profile from "../views/Profile.vue";
 import Kweets from "../views/Kweets.vue";
+import OtherProfile from "../views/OtherProfile.vue";
+import CreateProfile from "../views/CreateProfile.vue";
 
 Vue.use(VueRouter)
 
@@ -21,9 +23,14 @@ const routes: Array<RouteConfig> = [
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
   },
   {
-    path: "/profile",
-    name: "Profile",
-    component: Profile
+    path: "/profile/:name",
+    name: "profile",
+    component: OtherProfile
+  },
+  {
+    path: "/createProfile",
+    name: "CreateProfile",
+    component: CreateProfile
   },
   {
     path: "/kweet",
