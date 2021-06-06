@@ -23,7 +23,6 @@ export class KweetService {
     const url: string = `/kweet/tenKweets`;
     return AxiosRequestHandler.get(url)
       .then((res: AxiosResponse) => {
-        console.log(res)
         return res;
       })
       .catch((err: any) => {

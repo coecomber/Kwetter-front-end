@@ -8,9 +8,9 @@
       <router-link to="/">
         <span>Home</span>
       </router-link>
-      <a id="kweet" href="/kweet">
-        <span>Kweets</span>
-      </a>
+      <router-link to="/kweet">
+        <span>Kweet</span>
+      </router-link>
       <router-link :to="{ name: 'Profile', params: { name: $store.getters['profile/getProfile'].data.name } }">
         <span>Profile</span>
       </router-link>

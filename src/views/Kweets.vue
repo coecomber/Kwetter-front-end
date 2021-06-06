@@ -132,28 +132,10 @@ export default class Kweets extends Vue {
       this.kweetsFromStore = res.data;
     });
     await this.$store.dispatch("profile/getProfiles").then((res) => {
-      console.log(res);
       this.profilesFromStore = res.data;
-
-      for (let i = 0; i < this.kweetsFromStore.length; i++) {
-        let createdFormat = moment
-          .utc(String(this.kweetsFromStore[i].kweetCreated))
-          .format("YYYY-MM-DD hh:mm a");
-        this.kweetsFromStore[i].kweetCreated = createdFormat;
-      }
     });
-
-    for (let i = 0; i < this.kweetsFromStore.length; i++) {
-        await this.mergedFromStore.push({
-          ...this.kweetsFromStore[i],
-          ...this.profilesFromStore.find(
-            (itmInner) => itmInner.ownerId === this.kweetsFromStore[i].ownerId
-          ),
-        });
-      }
-
-      this.mergedFromStore.splice(0, 1);
-      this.loaded = true;
+    this.mergedFromStore.splice(0, 1);
+    this.loaded = true;
   }
 
   private kweetsFromStore = [{}];
@@ -175,11 +157,12 @@ export default class Kweets extends Vue {
     if (this.currentPage == this.maximumPageAmount) {
       $state.complete();
     } else {
-      this.currentPage++;
+      
       this.moreKweetsResponse = await KweetService.getAllKweetsByPageNumber(
         await this.$auth.getTokenSilently({}),
         this.currentPage
       ).then((res) => {
+        this.currentPage++;
         return res.data.data;
       });
 
