@@ -5,74 +5,38 @@
         <div>
           <h2 class="text-2xl font-bold">Create Profile</h2>
           <p>Please finish your profile before you continue on Kwetter.</p>
+          <br>
         </div>
-        <p>Username (Required)</p>
+        <p class="text-left">Username (Required)</p>
         <div>
           <v-input
-            type="textarea"
+            type="text"
             placeholder="How do you want to be known on kwetter?"
             v-model="profile.name"
             rows="1"
-            max=20
+            max="20"
             min="4"
           />
         </div>
-        <p>Description</p>
+        <br>
+        <p class="text-left">Description</p>
         <div>
           <v-input
             type="textarea"
-            placeholder="Tell something about yourself for people visiting your profile"
+            placeholder="Bio"
             v-model="profile.description"
           />
         </div>
-        <p>Occupation</p>
+        <br>
+        <p class="text-left">Occupation</p>
         <div>
           <v-input
-            type="textarea"
-            placeholder="If you want to share, type your occupation here"
+            type="text"
+            placeholder="Occupation"
             v-model="profile.occupation"
           />
         </div>
-        <p>Facebook link</p>
-        <div>
-          <v-input
-            type="textarea"
-            placeholder="Type your facebookLink here"
-            v-model="profile.facebookLink"
-          />
-        </div>
-        <p>Twitter link</p>
-        <div>
-          <v-input
-            type="textarea"
-            placeholder="Type your twitterLink here"
-            v-model="profile.twitterLink"
-          />
-        </div>
-        <p>Github link</p>
-        <div>
-          <v-input
-            type="textarea"
-            placeholder="Type your githubLink here"
-            v-model="profile.githubLink"
-          />
-        </div>
-        <p>Instagram link</p>
-        <div>
-          <v-input
-            type="textarea"
-            placeholder="Type your instagramLink here"
-            v-model="profile.instagramLink"
-          />
-        </div>
-        <p>Youtube link</p>
-        <div>
-          <v-input
-            type="textarea"
-            placeholder="Type your youtubeLink here"
-            v-model="profile.youtubeLink"
-          />
-        </div>
+
         <div>
           <v-button @click="createProfile">
             <slot>Create profile</slot>
@@ -96,6 +60,21 @@ import { CreateProfileRequest } from "@/modules/profile/dto/request/create-profi
   },
 })
 export default class Kweets extends Vue {
+  async mounted() {
+    if (!this.$auth.loading && this.$auth.isAuthenticated) {
+      await this.$store.dispatch("profile/getProfiles").then((res) => {
+        console.log(res.data)
+
+        this.$auth.getUser().then((user) => {
+          for (let i = 0; i < res.data.length; i++) {
+            console.log(res[i])
+          }
+          });
+
+      });
+    }
+  }
+
   private profile: CreateProfileRequest = {
     name: "",
     ownerId: "",
@@ -109,13 +88,11 @@ export default class Kweets extends Vue {
     youtubeLink: "",
   };
 
-  async created() {}
-
   private createProfile() {
     this.profile.ownerId = this.$auth.user.sub;
     this.profile.imageUrl = this.$auth.user.picture;
     this.$store.dispatch("profile/createProfile", this.profile);
-    this.$router.push('home')
+    this.$router.push("home");
   }
 }
 </script>

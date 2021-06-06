@@ -40,6 +40,7 @@ export default class App extends Vue {
     setTimeout(async () => {
       await this.SetLoggedInUserInProfileStore();
     }, 100);
+    
   }
 
   async SetLoggedInUserInProfileStore() {
