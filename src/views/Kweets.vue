@@ -14,24 +14,29 @@
         <ul id="example-1">
           <div class="flex flex-wrap justify-evenly">
             <div class="flex-initial">
-              <div class="flex-col p-4 space-y-4 bg-white rounded-md">
-                <div>
-                  <h2 class="text-2xl font-bold">New Kweet</h2>
-                  <p>Let us know what's on your mind.</p>
+              <v-form ref="form">
+                <div class="flex-col p-4 space-y-4 bg-white rounded-md">
+                  <div>
+                    <h2 class="text-2xl font-bold">New Kweet</h2>
+                    <p>Let us know what's on your mind.</p>
+                  </div>
+                  <div>
+                    <v-input
+                      clearable
+                      clear-icon="mdi-close-circle"
+                      type="textarea"
+                      placeholder="Type kweet here"
+                      v-model="kweet.kweet"
+                      @input="updateValue"
+                    />
+                  </div>
                 </div>
                 <div>
-                  <v-input
-                    type="textarea"
-                    placeholder="Type kweet here"
-                    v-model="kweet.kweet"
-                  />
+                  <v-button @click="createKweet">
+                    <slot>Post kweet</slot>
+                  </v-button>
                 </div>
-              </div>
-              <div>
-                <v-button @click="createKweet">
-                  <slot>Post kweet</slot>
-                </v-button>
-              </div>
+              </v-form>
 
               <div>
                 <li
@@ -127,6 +132,20 @@ moment.tz.setDefault("Europe/Amsterdam");
   },
 })
 export default class Kweets extends Vue {
+  updated() {
+    if (this.kweet.kweet.length < 1) {
+      console.log("ye");
+    }
+  }
+
+  updateValue() {
+    console.log("sap");
+    if (this.kweet.kweet.length > 3) {
+      let messageMax140Characters = this.kweet.kweet.substring(0, 140);
+      this.kweet.kweet = messageMax140Characters;
+    }
+  }
+
   async mounted() {
     await this.$store.dispatch("kweet/getKweets").then((res) => {
       this.kweetsFromStore = res.data;
@@ -157,7 +176,6 @@ export default class Kweets extends Vue {
     if (this.currentPage == this.maximumPageAmount) {
       $state.complete();
     } else {
-      
       this.moreKweetsResponse = await KweetService.getAllKweetsByPageNumber(
         await this.$auth.getTokenSilently({}),
         this.currentPage
@@ -196,17 +214,24 @@ export default class Kweets extends Vue {
   }
 
   private async createKweet() {
-    this.kweet.ownerId = this.$auth.user.sub;
-    await this.$store.dispatch("kweet/createKweet", this.kweet);
-    await this.$store.dispatch("kweet/getKweets");
+    if (this.kweet.kweet.length > 4 && this.kweet.kweet.length < 140) {
+      this.kweet.ownerId = this.$auth.user.sub;
+      await this.$store.dispatch("kweet/createKweet", this.kweet);
+      await this.$store.dispatch("kweet/getKweets");
 
-    //Adds just posted kweet to mergedFromStore data to show in our v-for
-    await this.$data.mergedFromStore.unshift({
-      ...this.kweet,
-      ...this.profilesFromStore.find(
-        (itmInner) => itmInner.ownerId === this.kweet.ownerId
-      ),
-    });
+      //Adds just posted kweet to mergedFromStore data to show in our v-for
+      await this.$data.mergedFromStore.unshift({
+        ...this.kweet,
+        ...this.profilesFromStore.find(
+          (itmInner) => itmInner.ownerId === this.kweet.ownerId
+        ),
+      });
+
+      this.kweet.kweet = "";
+    }
+    else{
+      this.$alert('A kweet can only be posted with a minimum of 4 and a maximum of 140 characters.')
+    }
   }
 }
 </script>
