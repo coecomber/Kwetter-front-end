@@ -1,5 +1,5 @@
 <template>
-  <div v-if="$auth.isAuthenticated && !$auth.loading">
+  <div v-if="$auth.isAuthenticated && !$auth.loading && loaded">
     <div class="py-12">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="lg:text-center">
@@ -33,60 +33,62 @@
                 </v-button>
               </div>
 
-              <li
-                v-for="mergeFromStore in mergedFromStore"
-                :key="mergeFromStore.kweetId"
-              >
-                <div
-                  class="bg-white border-2 border-gray-300 p-2 tracking-wide shadow-lg"
+              <div>
+                <li
+                  v-for="mergeFromStore in mergedFromStore"
+                  :key="mergeFromStore.kweetId"
                 >
-                  <div id="header" class="flex items-center mb-4">
+                  <div
+                    class="bg-white border-2 border-gray-300 p-2 tracking-wide shadow-lg"
+                  >
+                    <div id="header" class="flex items-center mb-4">
+                      <router-link
+                        :to="{
+                          name: 'Profile',
+                          params: { name: mergeFromStore.name },
+                        }"
+                      >
+                        <img
+                          alt="avatar"
+                          class="w-20 rounded-full border-2 border-gray-300"
+                          :src="mergeFromStore.imageUrl"
+                        />
+                      </router-link>
+                      <router-link
+                        :to="{
+                          name: 'Profile',
+                          params: { name: mergeFromStore.name },
+                        }"
+                      >
+                        <div id="header-text" class="leading-5 ml-6 sm">
+                          <h4 id="name" class="text-xl font-semibold">
+                            <a :href="'profile/' + mergeFromStore.name"
+                              >@{{ mergeFromStore.name }}</a
+                            >
+                          </h4>
+                        </div>
+                      </router-link>
+                      <div class="flex-auto text-right align-top">
+                        <p class="text-xs ml-2">
+                          {{ moment(mergeFromStore.kweetCreated).fromNow() }}
+                        </p>
+                      </div>
+                    </div>
                     <router-link
                       :to="{
-                        name: 'Profile',
-                        params: { name: mergeFromStore.name },
+                        name: 'Kweet',
+                        params: { id: mergeFromStore.kweetId },
                       }"
                     >
-                      <img
-                        alt="avatar"
-                        class="w-20 rounded-full border-2 border-gray-300"
-                        :src="mergeFromStore.imageUrl"
-                      />
-                    </router-link>
-                    <router-link
-                      :to="{
-                        name: 'Profile',
-                        params: { name: mergeFromStore.name },
-                      }"
-                    >
-                      <div id="header-text" class="leading-5 ml-6 sm">
-                        <h4 id="name" class="text-xl font-semibold">
-                          <a :href="'profile/' + mergeFromStore.name"
-                            >@{{ mergeFromStore.name }}</a
-                          >
-                        </h4>
+                      <div id="quote">
+                        <q class="italic text-gray-600">{{
+                          mergeFromStore.kweet
+                        }}</q>
                       </div>
                     </router-link>
-                    <div class="flex-auto text-right align-top">
-                      <p class="text-xs ml-2">
-                        {{ moment(mergeFromStore.kweetCreated).fromNow() }}
-                      </p>
-                    </div>
                   </div>
-                  <router-link
-                    :to="{
-                      name: 'Kweet',
-                      params: { kweetId: mergeFromStore.kweetId },
-                    }"
-                  >
-                    <div id="quote">
-                      <q class="italic text-gray-600">{{
-                        mergeFromStore.kweet
-                      }}</q>
-                    </div>
-                  </router-link>
-                </div>
-              </li>
+                </li>
+              </div>
               <infinite-loading spinner="spiral" @infinite="GetMoreKweets">
                 <div slot="no-more"></div>
               </infinite-loading>
@@ -120,7 +122,7 @@ moment.tz.setDefault("Europe/Amsterdam");
   },
   data() {
     return {
-      moment: moment
+      moment: moment,
     };
   },
 })
@@ -130,31 +132,34 @@ export default class Kweets extends Vue {
       this.kweetsFromStore = res.data;
     });
     await this.$store.dispatch("profile/getProfiles").then((res) => {
+      console.log(res);
       this.profilesFromStore = res.data;
+
+      for (let i = 0; i < this.kweetsFromStore.length; i++) {
+        let createdFormat = moment
+          .utc(String(this.kweetsFromStore[i].kweetCreated))
+          .format("YYYY-MM-DD hh:mm a");
+        this.kweetsFromStore[i].kweetCreated = createdFormat;
+      }
     });
 
     for (let i = 0; i < this.kweetsFromStore.length; i++) {
-      let createdFormat = moment
-        .utc(String(this.kweetsFromStore[i].kweetCreated))
-        .format("YYYY-MM-DD hh:mm a");
-      this.kweetsFromStore[i].kweetCreated = createdFormat;
-    }
+        await this.mergedFromStore.push({
+          ...this.kweetsFromStore[i],
+          ...this.profilesFromStore.find(
+            (itmInner) => itmInner.ownerId === this.kweetsFromStore[i].ownerId
+          ),
+        });
+      }
 
-    for (let i = 0; i < this.kweetsFromStore.length; i++) {
-      await this.mergedFromStore.push({
-        ...this.kweetsFromStore[i],
-        ...this.profilesFromStore.find(
-          (itmInner) => itmInner.ownerId === this.kweetsFromStore[i].ownerId
-        ),
-      });
-    }
-
-    this.mergedFromStore.splice(0, 1);
+      this.mergedFromStore.splice(0, 1);
+      this.loaded = true;
   }
 
   private kweetsFromStore = [{}];
   private profilesFromStore = [{}];
   private mergedFromStore = [{}];
+  private loaded = false;
 
   private kweet: CreateKweetRequest = {
     kweet: "",
@@ -170,7 +175,6 @@ export default class Kweets extends Vue {
     if (this.currentPage == this.maximumPageAmount) {
       $state.complete();
     } else {
-
       this.currentPage++;
       this.moreKweetsResponse = await KweetService.getAllKweetsByPageNumber(
         await this.$auth.getTokenSilently({}),
@@ -180,11 +184,11 @@ export default class Kweets extends Vue {
       });
 
       for (let i = 0; i < this.moreKweetsResponse.length; i++) {
-      let createdFormat = moment
-        .utc(String(this.moreKweetsResponse[i].kweetCreated))
-        .format("YYYY-MM-DD hh:mm a");
-      this.moreKweetsResponse[i].kweetCreated = createdFormat;
-    }
+        let createdFormat = moment
+          .utc(String(this.moreKweetsResponse[i].kweetCreated))
+          .format("YYYY-MM-DD hh:mm a");
+        this.moreKweetsResponse[i].kweetCreated = createdFormat;
+      }
 
       for (let i = 0; i < this.moreKweetsResponse.length; i++) {
         await this.mergedFromStore.push({
