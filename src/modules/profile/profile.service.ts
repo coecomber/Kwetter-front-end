@@ -23,9 +23,30 @@ export class ProfileService {
     const url: string = `profile`;
     return AxiosRequestHandler.get(url)
       .then((res: AxiosResponse) => {
-        console.log('hier komt een url');
-        console.log(url);
-        console.log('dit is het einde aan een url');
+        return res;
+      })
+      .catch((err: any) => {
+        console.error(err);
+        throw err;
+      });
+  }
+
+  public static getProfiles(): any {
+    const url: string = `profile/getAllProfiles`;
+    return AxiosRequestHandler.get(url)
+      .then((res: AxiosResponse) => {
+        return res;
+      })
+      .catch((err: any) => {
+        console.error(err);
+        throw err;
+      });
+  }
+
+  public static getProfileById(uuid: string): any {
+    const url: string = `profile/getOneById/${uuid}`;
+    return AxiosRequestHandler.get(url)
+      .then((res: AxiosResponse) => {
         return res;
       })
       .catch((err: any) => {

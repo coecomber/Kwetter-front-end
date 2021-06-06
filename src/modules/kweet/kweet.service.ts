@@ -20,16 +20,29 @@ export class KweetService {
   }
 
   public static getKweets(): any {
-    const url: string = `kweet`;
+    const url: string = `/kweet/tenKweets`;
     return AxiosRequestHandler.get(url)
       .then((res: AxiosResponse) => {
-        console.log('hier komt een url');
-        console.log(url);
-        console.log('dit is het einde aan een url');
+        console.log(res)
         return res;
       })
       .catch((err: any) => {
         console.error(err);
+        throw err;
+      });
+  }
+
+  public static getKweetsByPageNumber(): any {
+    //
+  }
+
+  public static getKweet(uuid: string): any {
+    const url: string = `/kweet/getOne/${uuid}`;
+    return AxiosRequestHandler.get(url)
+      .then((res: AxiosResponse) => {
+        return res;
+      })
+      .catch((err: any) => {
         throw err;
       });
   }

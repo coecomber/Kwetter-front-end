@@ -9,10 +9,6 @@ export const actions: ActionTree<KweetState, RootState> = {
     createKweet({ commit }: any, kweet: CreateKweetRequest) {
         KweetService.createKweet(kweet)
             .then((res: CreateKweetResponse) => {
-                console.log(
-                    'Ik probeer een kweet te maken'
-                );
-                console.log(res);
                 commit('CREATE_KWEET', kweet);
             })
             .catch((err: any) => {
@@ -22,11 +18,7 @@ export const actions: ActionTree<KweetState, RootState> = {
     async getKweets({ commit }: any) {
         return KweetService.getKweets()
             .then((res: any) => {
-                console.log(
-                    'Ik probeer alle kweets op te halen'
-                );
-                commit('GET_KWEETS', res);
-                console.log(res);
+                commit('GET_KWEETS');
                 return res;
             })
             .catch((err: any) => {
@@ -34,4 +26,25 @@ export const actions: ActionTree<KweetState, RootState> = {
             }
             )
     },
+    async getKweetsByPageNumber({ commit }: any) {
+        return KweetService.getKweetsByPageNumber()
+            .then((res: any) => {
+                commit('GET_10_KWEETS');
+                return res;
+            })
+            .catch((err: any) => {
+                throw err;
+            }
+            )
+    },
+    async getKweet({ commit }: any, uuid: string) {
+        return KweetService.getKweet(uuid)
+          .then((res: any) => {
+            commit('GET_KWEET', res);
+            return res;
+          })
+          .catch((err: any) => {
+            throw err;
+          });
+      },
 };

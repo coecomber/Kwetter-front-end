@@ -214,9 +214,7 @@ export default class Home extends Vue {
           await this.$auth.getTokenSilently({}),
           await this.$auth.user.sub
         ).then((res) => {
-          console.log(res);
           if (res.data.ownerId == undefined) {
-            console.log("router push");
             this.$router.push("CreateProfile");
           }
         });

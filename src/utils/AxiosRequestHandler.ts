@@ -13,8 +13,6 @@ class AxiosRequestHandler {
         return this.api
             .get(url, { headers: { } })
             .then((res: AxiosResponse) => {
-                console.log('Trying to get')
-                console.log(url)
                 return res;
             })
             .catch((err: AxiosError) => {

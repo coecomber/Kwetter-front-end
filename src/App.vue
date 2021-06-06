@@ -1,14 +1,17 @@
 <template>
   <div id="app">
-    
-    <Slide v-if="$auth.isAuthenticated && !$auth.loading" :closeOnNavigation="true">
+    <Slide
+      v-if="$auth.isAuthenticated && !$auth.loading"
+      :closeOnNavigation="true"
+    >
+      <p>Navigate where, {{ $store.getters['profile/getProfile'].data.name }}? </p>
       <router-link to="/">
         <span>Home</span>
       </router-link>
-      <router-link to="/kweet">
-        <span>Kweet</span>
-      </router-link>
-      <router-link to="/profile">
+      <a id="kweet" href="/kweet">
+        <span>Kweets</span>
+      </a>
+      <router-link :to="{ name: 'Profile', params: { name: $store.getters['profile/getProfile'].data.name } }">
         <span>Profile</span>
       </router-link>
       <!-- <router-link to="/about">
@@ -25,6 +28,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { Slide } from "vue-burger-menu"; // import the CSS transitions you wish to use, in this case we are using `Slide
+import { ProfileService } from "@/modules/profile/profile.service";
 
 @Component({
   components: {
@@ -32,13 +36,38 @@ import { Slide } from "vue-burger-menu"; // import the CSS transitions you wish 
   },
 })
 export default class App extends Vue {
+  async mounted() {
+    setTimeout(async () => {
+      await this.SetLoggedInUserInProfileStore();
+    }, 100);
+  }
+
+  async SetLoggedInUserInProfileStore() {
+    try {
+      this.$auth.getUser().then((user) => {
+        ProfileService.getProfileById(user.sub).then((res) => {
+          this.$auth.getUser().then((user) => {
+            this.$store.dispatch("profile/setProfile", user.sub);
+          });
+          if (res.data == "") {
+            setTimeout(async () => {
+              this.SetLoggedInUserInProfileStore();
+              // Failed to do this because auth user is still undefined. Try again
+            }, 100);
+          }
+        });
+      });
+    } catch (ex) {
+      console.log(ex)
+    }
+  }
+
   // Log the user out
   logout() {
     this.$auth.logout({
       returnTo: window.location.origin,
     });
   }
- 
 }
 </script>
 
@@ -68,7 +97,7 @@ body {
   background-image: url("./assets/bg.png");
   background-repeat: no-repeat;
   background-size: cover;
-  background-position: center; 
+  background-position: center;
   background-color: #808c9c;
 }
 

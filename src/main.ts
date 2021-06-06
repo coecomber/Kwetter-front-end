@@ -13,6 +13,7 @@ import VButton from '@/common/components/v-button.vue';
 Vue.component('v-input', VInput)
 Vue.component('v-button', VButton)
 
+
 // Vue.use(Vuex);
 
 Vue.use(Auth0Plugin, {

@@ -171,7 +171,6 @@ export default class Profile extends Vue {
       await this.$auth.getTokenSilently({}),
       'Dr. Joost'
     ).then((res) => {
-      console.log(res.data);
       return res.data
     })
   }

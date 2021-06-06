@@ -6,10 +6,13 @@ export const mutations: MutationTree<ProfileState> = {
   CREATE_PROFILE(state: ProfileState, profile: CreateProfileRequest) {
     state.profile = profile;
   },
-  GET_PROFILE(state: ProfileState, profile: any) { //TODO Typeing
+  GET_PROFILE(state: ProfileState, profile: any) {
     state.profile = profile;
   },
-  GET_PROFILES(state: ProfileState, profiles: any) { //TODO Typeing
+  SET_PROFILE(state: ProfileState, profile: any) { 
+    state.profile = profile;
+  },
+  GET_PROFILES(state: ProfileState, profiles: any) {
     state.profiles = profiles;
   },
 };

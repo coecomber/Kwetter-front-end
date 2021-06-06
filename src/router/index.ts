@@ -3,6 +3,7 @@ import VueRouter, { RouteConfig } from 'vue-router'
 import Home from '../views/Home.vue'
 import Profile from "../views/Profile.vue";
 import Kweets from "../views/Kweets.vue";
+import Kweet from "../views/Kweet.vue";
 import OtherProfile from "../views/OtherProfile.vue";
 import CreateProfile from "../views/CreateProfile.vue";
 
@@ -24,7 +25,7 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: "/profile/:name",
-    name: "profile",
+    name: "Profile",
     component: OtherProfile
   },
   {
@@ -36,6 +37,11 @@ const routes: Array<RouteConfig> = [
     path: "/kweet",
     name: "Kweets",
     component: Kweets
+  },
+  {
+    path: "/kweet/:id",
+    name: "Kweet",
+    component: Kweet
   }
 ]
 

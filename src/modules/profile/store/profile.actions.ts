@@ -9,10 +9,6 @@ export const actions: ActionTree<ProfileState, RootState> = {
     createProfile({ commit }: any, profile: CreateProfileRequest) {
         ProfileService.createProfile(profile)
             .then((res: CreateProfileResponse) => {
-                console.log(
-                    'Ik probeer een profile te maken'
-                );
-                console.log(res);
                 commit('CREATE_PROFILE', profile);
             })
             .catch((err: any) => {
@@ -20,10 +16,9 @@ export const actions: ActionTree<ProfileState, RootState> = {
             });
     },
     async getProfiles({ commit }: any) {
-        return ProfileService.getProfile()
+        return ProfileService.getProfiles()
             .then((res: any) => {
                 commit('GET_PROFILES', res);
-                console.log(res);
                 return res;
             })
             .catch((err: any) => {
@@ -31,4 +26,13 @@ export const actions: ActionTree<ProfileState, RootState> = {
             }
             )
     },
+    setProfile({ commit }: any, id: string) {
+        ProfileService.getProfileById(id)
+          .then( response => {
+            commit('SET_PROFILE', response);
+          })
+          .catch((err: any) => {
+            console.log(err);
+          });
+      },
 };
