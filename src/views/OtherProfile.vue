@@ -179,22 +179,26 @@
     </div>
 
     <div v-if="!followsProfile">
-      <v-form ref="form">
-        <div>
-          <v-button @click="followBtn">
-            <slot>Follow</slot>
-          </v-button>
-        </div>
-      </v-form>
+      <div v-if="!ownProfile">
+        <v-form ref="form">
+          <div>
+            <v-button @click="followBtn">
+              <slot>Follow</slot>
+            </v-button>
+          </div>
+        </v-form>
+      </div>
     </div>
     <div v-if="followsProfile">
-      <v-form ref="form">
-        <div>
-          <v-button @click="unFollowBtn">
-            <slot>Unfollow</slot>
-          </v-button>
-        </div>
-      </v-form>
+      <div v-if="!ownProfile">
+        <v-form ref="form">
+          <div>
+            <v-button @click="unFollowBtn && !ownProfile">
+              <slot>Unfollow</slot>
+            </v-button>
+          </div>
+        </v-form>
+      </div>
     </div>
 
     <div>
@@ -298,10 +302,15 @@ export default class Profile extends Vue {
       await this.$auth.getTokenSilently({}),
       this.$route.params.name
     ).then((res) => {
-      console.log(res.data.ownerId)
-      console.log(this.$auth.user.sub.toString())
-      if(res.data.ownerId == this.$auth.user.sub.toString()){
+      console.log(res.data.ownerId);
+      console.log(this.$auth.user.sub.toString());
+      if (res.data.ownerId == this.$auth.user.sub.toString()) {
+        console.log("settings ownProfile to true");
+        console.log(this.$data.ownProfile);
         this.$data.ownProfile = true;
+        console.log(this.$data.ownProfile);
+      } else {
+        this.$data.ownProfile = false;
       }
       return res.data;
     });
@@ -393,19 +402,19 @@ export default class Profile extends Vue {
 
   private createFollowRequest: CreateFollowRequest = {
     ownerId: this.$auth.user.sub.toString(),
-    followOwnerId: '',
+    followOwnerId: "",
   };
 
   private removeFollowRequest: CreateFollowRequest = {
     ownerId: this.$auth.user.sub.toString(),
-    followOwnerId: '',
+    followOwnerId: "",
   };
 
   private async followBtn() {
     console.log("follow");
     await this.$store.dispatch("follow/createFollow", this.createFollowRequest);
     this.$data.followsProfile = true;
-    this.$alert('You now follow ' + this.$route.params.name + '!')
+    this.$alert("You now follow " + this.$route.params.name + "!");
   }
 
   private async unFollowBtn() {
@@ -413,7 +422,7 @@ export default class Profile extends Vue {
     this.$data.followsProfile = true;
     await this.$store.dispatch("follow/removeFollow", this.removeFollowRequest);
     this.$data.followsProfile = false;
-    this.$alert('You no longer follow ' + this.$route.params.name + '.')
+    this.$alert("You no longer follow " + this.$route.params.name + ".");
   }
 }
 </script>

@@ -92,7 +92,7 @@ export default class Kweets extends Vue {
     this.profile.ownerId = this.$auth.user.sub;
     this.profile.imageUrl = this.$auth.user.picture;
     this.$store.dispatch("profile/createProfile", this.profile);
-    this.$router.push("home");
+    this.$router.push("kweet");
   }
 }
 </script>
