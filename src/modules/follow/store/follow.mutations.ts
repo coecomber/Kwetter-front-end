@@ -6,6 +6,9 @@ export const mutations: MutationTree<FollowState> = {
   CREATE_FOLLOW(state: FollowState, follow: CreateFollowRequest) {
     state.follow = follow;
   },
+  REMOVE_FOLLOW(state: FollowState, follow: CreateFollowRequest) {
+    state.follow = follow;
+  },
   GET_PROFILE(state: FollowState, follow: any) {
     state.follow = follow;
   },

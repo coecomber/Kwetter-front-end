@@ -11,7 +11,7 @@ class AxiosRequestHandler {
 
     public static get(url: string): any {
         return this.api
-            .get(url, { headers: { } })
+            .get(url, { headers: {} })
             .then((res: AxiosResponse) => {
                 return res;
             })
@@ -26,7 +26,9 @@ class AxiosRequestHandler {
         url: string,
         object: TRequestBody,
         config?: AxiosRequestConfig
-      ): Promise<AxiosResponse<TResponseBody>> {
+    ): Promise<AxiosResponse<TResponseBody>> {
+        console.log('trying')
+        console.log(object)
         return this.api
             .post(url, object)
             .then((res: AxiosResponse) => {
@@ -38,13 +40,19 @@ class AxiosRequestHandler {
             });
     }
 
-    public static delete(url: string, object: any): any {
+    public static delete<TRequestBody>(
+        url: string,
+        object: TRequestBody,
+    ): Promise<AxiosResponse> {
+        console.log('trying')
+        console.log(object)
         return this.api
-            .delete(url, object)
-            .then((res: AxiosResponse) => {
-                return res;
-            })
+            .delete(url, { data: object } )
             .catch((err: AxiosError) => {
+                console.log('Delete catch..')
+                console.log(err)
+                console.log(object)
+                console.log(url)
                 throw this.checkStatusCode(err);
             });
     }

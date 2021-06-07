@@ -178,7 +178,7 @@
       </div>
     </div>
 
-    <div v-if="followsProfile && !ownProfile">
+    <div v-if="!followsProfile">
       <v-form ref="form">
         <div>
           <v-button @click="followBtn">
@@ -187,7 +187,7 @@
         </div>
       </v-form>
     </div>
-    <div v-if="!followsProfile && !ownProfile">
+    <div v-if="followsProfile">
       <v-form ref="form">
         <div>
           <v-button @click="unFollowBtn">
@@ -298,6 +298,11 @@ export default class Profile extends Vue {
       await this.$auth.getTokenSilently({}),
       this.$route.params.name
     ).then((res) => {
+      console.log(res.data.ownerId)
+      console.log(this.$auth.user.sub.toString())
+      if(res.data.ownerId == this.$auth.user.sub.toString()){
+        this.$data.ownProfile = true;
+      }
       return res.data;
     });
 
@@ -309,12 +314,13 @@ export default class Profile extends Vue {
         this.$route.params.name
       ).then((res) => {
         this.createFollowRequest.followOwnerId = res.data.ownerId;
+        this.removeFollowRequest.followOwnerId = res.data.ownerId;
         return res.data.ownerId;
       })
     ).then((res) => {
       console.log(res.data);
       if (res.data.length == 1) {
-        this.followsProfile = true;
+        this.$data.followsProfile = true;
       }
       return res;
     });
@@ -390,15 +396,24 @@ export default class Profile extends Vue {
     followOwnerId: '',
   };
 
+  private removeFollowRequest: CreateFollowRequest = {
+    ownerId: this.$auth.user.sub.toString(),
+    followOwnerId: '',
+  };
+
   private async followBtn() {
     console.log("follow");
     await this.$store.dispatch("follow/createFollow", this.createFollowRequest);
-    this.$data.followsProfile = false;
+    this.$data.followsProfile = true;
+    this.$alert('You now follow ' + this.$route.params.name + '!')
   }
 
   private async unFollowBtn() {
     console.log("unFollow");
     this.$data.followsProfile = true;
+    await this.$store.dispatch("follow/removeFollow", this.removeFollowRequest);
+    this.$data.followsProfile = false;
+    this.$alert('You no longer follow ' + this.$route.params.name + '.')
   }
 }
 </script>
