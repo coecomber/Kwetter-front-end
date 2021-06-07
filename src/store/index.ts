@@ -8,6 +8,7 @@ import { getters } from '@/store/store.getters';
 
 import { KweetStore } from '@/modules/kweet/store/kweet.state';
 import { ProfileStore } from '@/modules/profile/store/profile.state';
+import { FollowStore } from '@/modules/follow/store/follow.state';
 
 Vue.use(Vuex);
 
@@ -23,6 +24,7 @@ const store: StoreOptions<RootState> = {
   modules: {
     kweet: KweetStore,
     profile: ProfileStore,
+    follow: FollowStore,
   },
   state,
   mutations,

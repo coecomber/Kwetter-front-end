@@ -178,6 +178,25 @@
       </div>
     </div>
 
+    <div v-if="followsProfile && !ownProfile">
+      <v-form ref="form">
+        <div>
+          <v-button @click="followBtn">
+            <slot>Follow</slot>
+          </v-button>
+        </div>
+      </v-form>
+    </div>
+    <div v-if="!followsProfile && !ownProfile">
+      <v-form ref="form">
+        <div>
+          <v-button @click="unFollowBtn">
+            <slot>Unfollow</slot>
+          </v-button>
+        </div>
+      </v-form>
+    </div>
+
     <div>
       <ul id="example-1" class="items-center justify-center content-center">
         <div class="max-w-2xl justify-center content-center m-auto mt-4">
@@ -240,7 +259,9 @@
 import { Component, Vue } from "vue-property-decorator";
 import InfiniteLoading from "vue-infinite-loading";
 import ProfileService from "@/modules/profile/profileService";
+import FollowService from "@/modules/follow/followService";
 import KweetService from "@/modules/kweet/kweetService";
+import { CreateFollowRequest } from "@/modules/follow/dto/request/create-follow.request";
 import moment from "moment-timezone";
 moment.tz.setDefault("Europe/Amsterdam");
 
@@ -252,11 +273,14 @@ moment.tz.setDefault("Europe/Amsterdam");
   data() {
     return {
       moment: moment,
+      followsProfile: false,
+      ownProfile: false,
     };
   },
 })
 export default class Profile extends Vue {
   private profile = [];
+  private follow = [];
 
   async created() {
     const auth = await this.$auth.getUser();
@@ -275,6 +299,24 @@ export default class Profile extends Vue {
       this.$route.params.name
     ).then((res) => {
       return res.data;
+    });
+
+    this.follow = await FollowService.checkIfFollowing(
+      await this.$auth.getTokenSilently({}),
+      await this.$auth.user.sub,
+      await ProfileService.GetProfileByName(
+        await this.$auth.getTokenSilently({}),
+        this.$route.params.name
+      ).then((res) => {
+        this.createFollowRequest.followOwnerId = res.data.ownerId;
+        return res.data.ownerId;
+      })
+    ).then((res) => {
+      console.log(res.data);
+      if (res.data.length == 1) {
+        this.followsProfile = true;
+      }
+      return res;
     });
 
     await this.$store
@@ -341,6 +383,22 @@ export default class Profile extends Vue {
 
       $state.loaded();
     }
+  }
+
+  private createFollowRequest: CreateFollowRequest = {
+    ownerId: this.$auth.user.sub.toString(),
+    followOwnerId: '',
+  };
+
+  private async followBtn() {
+    console.log("follow");
+    await this.$store.dispatch("follow/createFollow", this.createFollowRequest);
+    this.$data.followsProfile = false;
+  }
+
+  private async unFollowBtn() {
+    console.log("unFollow");
+    this.$data.followsProfile = true;
   }
 }
 </script>

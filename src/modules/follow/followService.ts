@@ -1,45 +1,17 @@
 import AxiosRequestHandler from '@/utils/AxiosRequestHandler';
-import { AxiosResponse } from 'axios';
-import { CreateFollowRequest } from '@/modules/follow/dto/request/create-follow.request';
-import { CreateFollowResponse } from '@/modules/follow/dto/response/create-follow.response';
 
-export class FollowService {
-  public static async createFollow(
-    createFollow: CreateFollowRequest
-  ): Promise<CreateFollowResponse> {
-    return AxiosRequestHandler.post<
-      CreateFollowRequest,
-      CreateFollowResponse
-    >('/follow', createFollow)
-      .then((res: AxiosResponse<CreateFollowResponse>) => {
-        return res.data;
-      })
-      .catch((err: any) => {
-        throw err;
-      });
-  }
+class FollowService{
+    public static getAllFollows(token: string): any{
+        return AxiosRequestHandler.get(`follow`);
+    }
 
-  public static getFollowByOwnerId(ownerId: string): any {
-    const url: string = `follow/getFollowing/${ownerId}`;
-    return AxiosRequestHandler.get(url)
-      .then((res: AxiosResponse) => {
-        return res;
-      })
-      .catch((err: any) => {
-        console.error(err);
-        throw err;
-      });
-  }
+    public static getAllFollowsPaged(token: string, ownerId: string): any{
+        return AxiosRequestHandler.get(`follow/getFollowing/${ownerId}`);
+    }
 
-  public static getFollows(): any {
-    const url: string = `follow`;
-    return AxiosRequestHandler.get(url)
-      .then((res: AxiosResponse) => {
-        return res;
-      })
-      .catch((err: any) => {
-        console.error(err);
-        throw err;
-      });
-  }
+    public static checkIfFollowing(token: string, ownerId: string, followingOwnerId: string): any{
+        return AxiosRequestHandler.get(`follow/checkIfFollowing/${ownerId}/${followingOwnerId}`);
+    }
 }
+
+export default FollowService;
