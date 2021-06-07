@@ -1,26 +1,5 @@
 <template >
   <div v-if="!$auth.loading">
-    <div class="flex items-start ml-24 mt-6">
-      <!-- <img
-        style="margin-left: auto; margin-right: auto"
-        :src="$auth.user.picture"
-      /> -->
-      <!-- <h2>{{ $auth.user.name }}</h2>
-      <p>{{ $auth.user.email }}</p>
-      <p>{{ $auth.user.sub }}</p> -->
-    </div>
-
-    <!-- <div>
-      <pre>{{ JSON.stringify($auth.user, null, 2) }}</pre>
-    </div> -->
-    <!-- <div class="flex-wrap mt-36 mb-8">
-      <v-button>
-        <router-link to="/kweet">
-          <span>Back to kweets</span>
-        </router-link>
-      </v-button>
-    </div> -->
-
     <div
       class="max-w-4xl flex items-center h-auto flex-wrap mx-auto my-32 lg:my-0"
     >
@@ -290,6 +269,14 @@ export default class Profile extends Vue {
   }
 
   async mounted() {
+    const auth = await this.$auth.getUser();
+    this.profile = await ProfileService.GetProfileByName(
+      await this.$auth.getTokenSilently({}),
+      this.$route.params.name
+    ).then((res) => {
+      return res.data;
+    });
+
     await this.$store
       .dispatch("kweet/getKweetsByOwnerIdAndPageNumber", profile.ownerId, 0)
       .then((res) => {
@@ -306,6 +293,7 @@ export default class Profile extends Vue {
   private profilesFromStore = [{}];
   private mergedFromStore = [{}];
   private loaded = false;
+  private following = false;
 
   private currentPage = 0;
   private maximumPageAmount = 10;
