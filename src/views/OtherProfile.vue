@@ -178,28 +178,26 @@
       </div>
     </div>
 
-    <div v-if="!followsProfile">
-      <div v-if="!ownProfile">
-        <v-form ref="form">
+    <v-form ref="form">
+      <div v-if="!followsProfile">
+        <div v-if="!ownProfile">
           <div>
             <v-button @click="followBtn">
               <slot>Follow</slot>
             </v-button>
           </div>
-        </v-form>
+        </div>
       </div>
-    </div>
-    <div v-if="followsProfile">
-      <div v-if="!ownProfile">
-        <v-form ref="form">
+      <div v-if="followsProfile">
+        <div v-if="!ownProfile">
           <div>
-            <v-button @click="unFollowBtn && !ownProfile">
+            <v-button @click="unFollowBtn">
               <slot>Unfollow</slot>
             </v-button>
           </div>
-        </v-form>
+        </div>
       </div>
-    </div>
+    </v-form>
 
     <div>
       <ul id="example-1" class="items-center justify-center content-center">
