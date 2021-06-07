@@ -37,6 +37,17 @@ export const actions: ActionTree<KweetState, RootState> = {
             }
             )
     },
+    async getKweetsByOwnerIdAndPageNumber({ commit }: any, ownerId: string) {
+        return KweetService.getKweetsByOwnerIdAndPageNumber(ownerId, 0)
+            .then((res: any) => {
+                commit('GET_10_KWEETS');
+                return res;
+            })
+            .catch((err: any) => {
+                throw err;
+            }
+            )
+    },
     async getKweet({ commit }: any, uuid: string) {
         return KweetService.getKweet(uuid)
           .then((res: any) => {

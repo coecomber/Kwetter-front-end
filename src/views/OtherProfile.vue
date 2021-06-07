@@ -27,20 +27,55 @@
       <!--Main Col-->
       <div
         id="profile"
-        class="w-full lg:w-3/5 rounded-lg lg:rounded-l-lg lg:rounded-r-none shadow-2xl bg-white opacity-75 mx-6 lg:mx-0"
+        class="
+          w-full
+          lg:w-3/5
+          rounded-lg
+          lg:rounded-l-lg lg:rounded-r-none
+          shadow-2xl
+          bg-white
+          opacity-75
+          mx-6
+          lg:mx-0
+        "
       >
         <div class="p-4 md:p-12 text-center lg:text-left">
           <img
-            class="block lg:hidden rounded-full shadow-xl mx-auto -mt-16 h-48 w-48 bg-cover bg-center"
+            class="
+              block
+              lg:hidden
+              rounded-full
+              shadow-xl
+              mx-auto
+              -mt-16
+              h-48
+              w-48
+              bg-cover bg-center
+            "
             :src="profile.imageUrl"
           />
 
           <h1 class="text-3xl font-bold pt-8 lg:pt-0">@{{ profile.name }}</h1>
           <div
-            class="mx-auto lg:mx-0 w-4/5 pt-3 border-b-2 border-green-500 opacity-25"
+            class="
+              mx-auto
+              lg:mx-0
+              w-4/5
+              pt-3
+              border-b-2 border-green-500
+              opacity-25
+            "
           ></div>
           <p
-            class="pt-4 text-base font-bold flex items-center justify-center lg:justify-start"
+            class="
+              pt-4
+              text-base
+              font-bold
+              flex
+              items-center
+              justify-center
+              lg:justify-start
+            "
           >
             <svg
               class="h-4 fill-current text-green-700 pr-4"
@@ -59,7 +94,17 @@
           </p>
 
           <div
-            class="mt-6 pb-16 lg:pb-0 w-4/5 lg:w-full mx-auto flex flex-wrap items-center justify-between"
+            class="
+              mt-6
+              pb-16
+              lg:pb-0
+              w-4/5
+              lg:w-full
+              mx-auto
+              flex flex-wrap
+              items-center
+              justify-between
+            "
           >
             <a
               class="link"
@@ -147,24 +192,88 @@
       <div class="w-full lg:w-2/5">
         <!-- Big profile image for side bar (desktop) -->
         <img
-          :src=profile.imageUrl
+          :src="profile.imageUrl"
           class="rounded-none lg:rounded-lg shadow-2xl hidden lg:block"
         />
         <!-- Image from: http://unsplash.com/photos/MP0IUfwrn0A -->
       </div>
+    </div>
+
+    <div>
+      <ul id="example-1" class="items-center justify-center content-center">
+        <div class="max-w-2xl justify-center content-center m-auto mt-4">
+          <div class="items-center">
+            <li
+              v-for="mergeFromStore in mergedFromStore"
+              :key="mergeFromStore.kweetId"
+            >
+              <div
+                class="
+                  bg-white
+                  border-2 border-gray-300
+                  p-2
+                  tracking-wide
+                  shadow-lg
+                "
+              >
+                <div id="header" class="flex items-center mb-4">
+                  <img
+                    alt="avatar"
+                    class="w-20 rounded-full border-2 border-gray-300"
+                    :src="profile.imageUrl"
+                  />
+                  <div id="header-text" class="leading-5 ml-6 sm">
+                    <h4 id="name" class="text-xl font-semibold">
+                      @{{ profile.name }}
+                    </h4>
+                  </div>
+                  <div class="flex-auto text-right align-top">
+                    <p class="text-xs ml-2">
+                      {{ moment(mergeFromStore.kweetCreated).fromNow() }}
+                    </p>
+                  </div>
+                </div>
+                <router-link
+                  :to="{
+                    name: 'Kweet',
+                    params: { id: mergeFromStore.kweetId },
+                  }"
+                >
+                  <div id="quote">
+                    <q class="italic text-gray-600">{{
+                      mergeFromStore.kweet
+                    }}</q>
+                  </div>
+                </router-link>
+              </div>
+            </li>
+            <infinite-loading spinner="spiral" @infinite="GetMoreKweets">
+              <div slot="no-more"></div>
+            </infinite-loading>
+          </div>
+        </div>
+      </ul>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import InfiniteLoading from "vue-infinite-loading";
 import ProfileService from "@/modules/profile/profileService";
+import KweetService from "@/modules/kweet/kweetService";
+import moment from "moment-timezone";
+moment.tz.setDefault("Europe/Amsterdam");
 
 @Component({
   name: "Profile",
-  components: {},
+  components: {
+    InfiniteLoading,
+  },
   data() {
-    return {};
+    return {
+      moment: moment,
+    };
   },
 })
 export default class Profile extends Vue {
@@ -178,6 +287,72 @@ export default class Profile extends Vue {
     ).then((res) => {
       return res.data;
     });
+  }
+
+  async mounted() {
+    await this.$store
+      .dispatch("kweet/getKweetsByOwnerIdAndPageNumber", profile.ownerId, 0)
+      .then((res) => {
+        this.kweetsFromStore = res.data;
+      });
+    await this.$store.dispatch("profile/getProfiles").then((res) => {
+      this.profilesFromStore = res.data;
+    });
+    this.mergedFromStore.splice(0, 1);
+    this.loaded = true;
+  }
+
+  private kweetsFromStore = [{}];
+  private profilesFromStore = [{}];
+  private mergedFromStore = [{}];
+  private loaded = false;
+
+  private currentPage = 0;
+  private maximumPageAmount = 10;
+  private timeline = false;
+  private moreKweetsResponse = [];
+
+  async GetMoreKweets($state) {
+    if (this.currentPage == this.maximumPageAmount) {
+      $state.complete();
+    } else {
+      const auth = await this.$auth.getUser();
+      this.profile = await ProfileService.GetProfileByName(
+        await this.$auth.getTokenSilently({}),
+        this.$route.params.name
+      ).then((res) => {
+        return res.data;
+      });
+      this.moreKweetsResponse =
+        await KweetService.getAllKweetsByOwnerIdAndPageNumber(
+          await this.$auth.getTokenSilently({}),
+          this.profile.ownerId,
+          this.currentPage
+        ).then((res) => {
+          console.log(res);
+          this.currentPage++;
+          return res.data.data;
+        });
+
+      for (let i = 0; i < this.moreKweetsResponse.length; i++) {
+        let createdFormat = moment
+          .utc(String(this.moreKweetsResponse[i].kweetCreated))
+          .format("YYYY-MM-DD hh:mm a");
+        this.moreKweetsResponse[i].kweetCreated = createdFormat;
+      }
+
+      for (let i = 0; i < this.moreKweetsResponse.length; i++) {
+        await this.mergedFromStore.push({
+          ...this.moreKweetsResponse[i],
+          ...this.profilesFromStore.find(
+            (itmInner) =>
+              itmInner.ownerId === this.moreKweetsResponse[i].ownerId
+          ),
+        });
+      }
+
+      $state.loaded();
+    }
   }
 }
 </script>

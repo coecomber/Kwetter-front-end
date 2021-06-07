@@ -35,6 +35,18 @@ export class KweetService {
     //
   }
 
+  public static getKweetsByOwnerIdAndPageNumber(ownerId: string, pageNumber: number): any {
+    const url: string = `/kweet/${ownerId}/${pageNumber}`;
+    return AxiosRequestHandler.get(url)
+      .then((res: AxiosResponse) => {
+        return res;
+      })
+      .catch((err: any) => {
+        console.error(err);
+        throw err;
+      });
+  }
+
   public static getKweet(uuid: string): any {
     const url: string = `/kweet/getOne/${uuid}`;
     return AxiosRequestHandler.get(url)

@@ -12,4 +12,7 @@ export const mutations: MutationTree<KweetState> = {
   GET_KWEETS(state: KweetState, kweets: any) {
     state.kweets = kweets;
   },
+  GET_10_KWEETS(state: KweetState, kweets: any) {
+    state.kweets = kweets;
+  },
 };

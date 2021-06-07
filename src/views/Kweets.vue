@@ -133,13 +133,10 @@ moment.tz.setDefault("Europe/Amsterdam");
 })
 export default class Kweets extends Vue {
   updated() {
-    if (this.kweet.kweet.length < 1) {
-      console.log("ye");
-    }
+
   }
 
   updateValue() {
-    console.log("sap");
     if (this.kweet.kweet.length > 3) {
       let messageMax140Characters = this.kweet.kweet.substring(0, 140);
       this.kweet.kweet = messageMax140Characters;
