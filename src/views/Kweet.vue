@@ -5,10 +5,56 @@
         <ul id="example-1">
           <div class="flex flex-wrap justify-evenly">
             <div class="flex-initial">
-              <p>Kweet!</p>
-              <p>This is the Kweet page for a individual kweet!</p>
-              <p>{{ kweet.kweet }}</p>
-              <p>Posted by {{ kweet.ownerId }}</p>
+              
+              <div
+                class="bg-white border-2 border-gray-300 p-2 tracking-wide shadow-lg"
+              >
+                <div id="header" class="flex items-center mb-4">
+                  <router-link
+                    :to="{
+                      name: 'Profile',
+                      params: { name: 'kweet.name' },
+                    }"
+                  >
+                    <img
+                      alt="avatar"
+                      class="w-20 rounded-full border-2 border-gray-300"
+                      src="https://outdoorvalley.nl/wp-content/uploads/2020/05/SON4830-scaled.jpg"
+                    />
+                  </router-link>
+                  <router-link
+                    :to="{
+                      name: 'Profile',
+                      params: { name: kweet.name },
+                    }"
+                  >
+                    <div id="header-text" class="leading-5 ml-6 sm">
+                      <h4 id="name" class="text-xl font-semibold">
+                        <a :href="'profile/' + kweet.name"
+                          >@Dr. Joost</a
+                        >
+                      </h4>
+                    </div>
+                  </router-link>
+                  <div class="flex-auto text-right align-top">
+                    <p class="text-xs ml-2">
+                      
+                    </p>
+                  </div>
+                </div>
+                <router-link
+                  :to="{
+                    name: 'Kweet',
+                    params: { id: kweet.kweetId },
+                  }"
+                >
+                  <div id="quote">
+                    <q class="italic text-gray-600">{{
+                      kweet.kweet
+                    }}</q>
+                  </div>
+                </router-link>
+              </div>
             </div>
           </div>
         </ul>

@@ -88,7 +88,9 @@
                       <div id="quote">
                         <q class="italic text-gray-600">{{
                           mergeFromStore.kweet
-                        }}</q>
+                        }}
+                        
+                        </q>
                       </div>
                     </router-link>
                   </div>
@@ -100,10 +102,34 @@
             </div>
 
             <div class="flex-initial place-self-stretch">
+              <br><br>
+              <p class="max-w-2xl text-xl text-gray-500 lg:mx-auto">
+                My <b>Profile</b>
+              </p>
+              <div class="bg-white border-2 border-gray-300 p-2 tracking-wide shadow-lg">
+                <p>Hello <b>{{ $store.getters['profile/getProfile'].data.name}}</b></p>
+                <p>Followers (2)</p>
+                <p>Following (3)</p>
+                <br>
+                <p><b>Member since</b></p> 
+                <p> {{ $store.getters['profile/getProfile'].data.profileCreated }}</p>
+              </div>
+              <br><br>
+
               <p class="max-w-2xl text-xl text-gray-500 lg:mx-auto">
                 What's trending on <b>Kwetter</b>?
               </p>
+              <br>
+              <div class="bg-white border-2 border-gray-300 p-2 tracking-wide shadow-lg">
+                <p>#zon (2)
+                </p>
+                <p>#dinsdag (1)
+                </p>
+                <p>#hallo (1)
+                </p>
+              </div>
             </div>
+            
           </div>
         </ul>
       </div>
